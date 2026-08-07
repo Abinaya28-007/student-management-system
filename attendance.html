@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Attendance - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item">
+                <i class="ri-dashboard-line nav-icon"></i>
+                Dashboard
+            </a>
+            <a href="students.html" class="nav-item">
+                <i class="ri-group-line nav-icon"></i>
+                Students
+            </a>
+            <a href="attendance.html" class="nav-item active">
+                <i class="ri-calendar-check-line nav-icon"></i>
+                Attendance
+            </a>
+            <a href="marks.html" class="nav-item">
+                <i class="ri-file-text-line nav-icon"></i>
+                Marks
+            </a>
+            <a href="assignments.html" class="nav-item">
+                <i class="ri-book-read-line nav-icon"></i>
+                Assignments
+            </a>
+            <a href="reports.html" class="nav-item">
+                <i class="ri-bar-chart-box-line nav-icon"></i>
+                Reports
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="profile.html" class="nav-item">
+                <i class="ri-user-settings-line nav-icon"></i>
+                Profile
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <h1 class="page-title">Daily Attendance</h1>
+            </div>
+            
+            <div class="topbar-right">
+                <div class="user-profile" onclick="location.href='profile.html'">
+                    <div class="avatar"><i class="ri-user-fill"></i></div>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout">
+                    <i class="ri-logout-box-r-line"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Select Class Criteria</h3>
+                </div>
+                <div class="card-body">
+                    <div class="filter-bar" style="margin-bottom: 0; background: transparent; padding: 0; border: none;">
+                        <div class="filter-group">
+                            <label>Department</label>
+                            <select id="filterDept" class="form-select">
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Mechanical">Mechanical</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Year</label>
+                            <select id="filterYear" class="form-select">
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Section</label>
+                            <select id="filterSection" class="form-select">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Subject Code/Name</label>
+                            <input type="text" id="filterSubject" class="form-control" placeholder="e.g. CS301" required>
+                        </div>
+                        <div class="filter-group">
+                            <label>Date</label>
+                            <input type="date" id="filterDate" class="form-control" required>
+                        </div>
+                        <div class="filter-group" style="flex: 0 0 auto;">
+                            <button id="loadStudentsBtn" class="btn btn-primary w-100 mt-4" style="height: 42px;">Load Students</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="attendanceSection" class="card d-none">
+                <div class="card-header">
+                    <h3 class="card-title">Mark Attendance</h3>
+                    <div class="flex gap-2">
+                        <button id="markAllPresentBtn" class="btn btn-secondary text-sm"><i class="ri-check-line text-success"></i> Mark All Present</button>
+                        <button id="markAllAbsentBtn" class="btn btn-secondary text-sm"><i class="ri-close-line text-danger"></i> Mark All Absent</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body border-t border-color" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div class="flex gap-4">
+                        <div><span class="badge badge-success">Present: <span id="countPresent">0</span></span></div>
+                        <div><span class="badge badge-danger">Absent: <span id="countAbsent">0</span></span></div>
+                    </div>
+                    <button id="saveAttendanceBtn" class="btn btn-primary"><i class="ri-save-3-line"></i> Save Attendance</button>
+                </div>
+            </div>
+
+            <div id="emptyState" class="card">
+                <div class="empty-state">
+                    <i class="ri-user-search-line empty-state-icon"></i>
+                    <h3>No class selected</h3>
+                    <p>Please select department, year, section, subject and date to load students.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/attendance.js"></script>
+<script>
+    // Set today's date as default
+    document.getElementById('filterDate').valueAsDate = new Date();
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

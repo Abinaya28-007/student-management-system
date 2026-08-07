@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Attendance - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="student-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="student-dashboard.html" class="nav-item">
+                <i class="ri-dashboard-line nav-icon"></i>
+                Dashboard
+            </a>
+            <a href="student-attendance.html" class="nav-item active">
+                <i class="ri-calendar-check-line nav-icon"></i>
+                My Attendance
+            </a>
+            <a href="student-marks.html" class="nav-item">
+                <i class="ri-file-text-line nav-icon"></i>
+                My Marks
+            </a>
+            <a href="student-assignments.html" class="nav-item">
+                <i class="ri-book-read-line nav-icon"></i>
+                Assignments
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="student-profile.html" class="nav-item">
+                <i class="ri-user-settings-line nav-icon"></i>
+                Profile
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <h1 class="page-title">My Attendance</h1>
+            </div>
+            
+            <div class="topbar-right">
+                <div class="user-profile" onclick="location.href='student-profile.html'">
+                    <div class="avatar"><i class="ri-user-fill"></i></div>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout">
+                    <i class="ri-logout-box-r-line"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <h2 style="font-size: 1rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;">Overall Attendance</h2>
+                <div style="font-size: 4rem; font-weight: 700; color: var(--primary-color); line-height: 1; font-family: 'Outfit';" id="overallPct">--%</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Subject-wise Attendance</h3>
+                </div>
+                <div class="card-body" id="subjectCardsContainer">
+                    <div class="empty-state">
+                        <span class="loader"></span>
+                        <p class="mt-2">Loading attendance records...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent History</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="3" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script type="module" src="js/student-attendance.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

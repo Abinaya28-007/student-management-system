@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduERP Register - Student Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-wrapper" style="padding: 2rem 1rem;">
+    <div class="auth-card" style="max-width: 600px;">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="ri-user-add-fill"></i>
+            </div>
+            <h1 class="auth-title">Create an Account</h1>
+            <p class="auth-subtitle">Join EduERP to manage your academic journey</p>
+        </div>
+
+        <form id="registerForm" onsubmit="event.preventDefault();">
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="name@college.edu" required>
+                </div>
+            </div>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="role" class="form-label">Account Role</label>
+                    <select id="role" class="form-select" required>
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty / Teacher</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Student specific fields -->
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="rollNo" class="form-label">Roll Number</label>
+                    <input type="text" id="rollNo" class="form-control" placeholder="e.g. CS202401">
+                </div>
+
+                <div class="form-group">
+                    <label for="department" class="form-label">Department</label>
+                    <select id="department" class="form-select">
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="year" class="form-label">Year</label>
+                    <select id="year" class="form-select">
+                        <option value="I">I</option>
+                        <option value="II">II</option>
+                        <option value="III">III</option>
+                        <option value="IV">IV</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="section" class="form-label">Section</label>
+                    <select id="section" class="form-select">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="registerBtn" class="btn btn-primary w-100 mt-3" style="padding: 0.75rem; font-size: 1rem;">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="index.html">Sign In</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Assignments - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> Marks</a>
+            <a href="assignments.html" class="nav-item active"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
+            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h1 class="page-title">Manage Assignments</h1>
+            </div>
+            <div class="topbar-right">
+                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Assignments</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="searchAssignments" class="form-control" placeholder="Search title or subject..." style="width: 250px; margin-bottom: 0;">
+                        <button id="addAssignmentBtn" class="btn btn-primary"><i class="ri-add-line"></i> Create Assignment</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th>Target Class</th>
+                                <th>Deadline</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignmentsTableBody">
+                            <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="assignmentModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="assignmentModalTitle">Create Assignment</h3>
+            <button class="modal-close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="assignmentId">
+            <div class="form-group">
+                <label class="form-label">Assignment Title</label>
+                <input type="text" id="assignTitle" class="form-control" placeholder="e.g. Chapter 1 Quiz" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <input type="text" id="assignSubject" class="form-control" placeholder="e.g. Database Systems" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Target Class</label>
+                <div class="flex gap-2 mb-2">
+                    <select id="assignDept" class="form-select">
+                        <option value="Computer Science">CS</option>
+                        <option value="Information Technology">IT</option>
+                        <option value="Electronics">ECE</option>
+                        <option value="Mechanical">MECH</option>
+                        <option value="All">All Departments</option>
+                    </select>
+                    <select id="assignYear" class="form-select">
+                        <option value="I">Yr I</option><option value="II">Yr II</option><option value="III">Yr III</option><option value="IV">Yr IV</option><option value="All">All</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Deadline</label>
+                <input type="date" id="assignDeadline" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description / Instructions</label>
+                <textarea id="assignDesc" class="form-control" rows="4" placeholder="Write assignment details..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary modal-close-btn">Cancel</button>
+            <button id="saveAssignmentBtn" class="btn btn-primary">Save Assignment</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script type="module" src="js/assignments.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

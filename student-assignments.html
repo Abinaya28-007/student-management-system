@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assignments - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="student-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="student-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="student-attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> My Attendance</a>
+            <a href="student-marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> My Marks</a>
+            <a href="student-assignments.html" class="nav-item active"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="student-profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h1 class="page-title">My Assignments</h1>
+            </div>
+            <div class="topbar-right">
+                <div class="user-profile" onclick="location.href='student-profile.html'">
+                    <div class="avatar"><i class="ri-user-fill"></i></div>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pending & Upcoming Assignments</h3>
+                </div>
+                <div class="card-body" style="padding: 0;" id="assignmentsContainer">
+                    <div class="empty-state">
+                        <span class="loader"></span>
+                        <p class="mt-2">Loading assignments...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- View Modal -->
+<div class="modal-overlay" id="viewAssignmentModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="viewTitle">Assignment Title</h3>
+            <button class="modal-close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="flex justify-between items-center mb-3">
+                <span class="badge badge-primary" id="viewSubject">Subject</span>
+                <span class="badge badge-warning" id="viewDeadline">Deadline</span>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label" style="text-transform:uppercase; font-size: 0.75rem;">Description / Instructions</label>
+                <div id="viewDesc" style="background: var(--bg-color); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem; white-space: pre-wrap;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary modal-close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/student-assignments.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

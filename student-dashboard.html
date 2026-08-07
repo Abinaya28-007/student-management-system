@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="student-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="student-dashboard.html" class="nav-item active">
+                <i class="ri-dashboard-line nav-icon"></i>
+                Dashboard
+            </a>
+            <a href="student-attendance.html" class="nav-item">
+                <i class="ri-calendar-check-line nav-icon"></i>
+                My Attendance
+            </a>
+            <a href="student-marks.html" class="nav-item">
+                <i class="ri-file-text-line nav-icon"></i>
+                My Marks
+            </a>
+            <a href="student-assignments.html" class="nav-item">
+                <i class="ri-book-read-line nav-icon"></i>
+                Assignments
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="student-profile.html" class="nav-item">
+                <i class="ri-user-settings-line nav-icon"></i>
+                Profile
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="ri-menu-line"></i>
+                </button>
+                <h1 class="page-title">Student Portal</h1>
+            </div>
+            
+            <div class="topbar-right">
+                <div class="user-profile" onclick="location.href='student-profile.html'">
+                    <div class="user-info text-right d-none d-sm-block" style="display: block;">
+                        <div class="user-name" id="userName">Loading...</div>
+                        <div class="user-role" id="userDept">Student</div>
+                    </div>
+                    <div class="avatar"><i class="ri-user-fill"></i></div>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout">
+                    <i class="ri-logout-box-r-line"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            
+            <div class="card" style="background: linear-gradient(135deg, var(--primary-color) 0%, #312e81 100%); color: white; border: none;">
+                <div class="card-body">
+                    <h2 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;">Welcome back, <span id="welcomeName">Student</span>! 👋</h2>
+                    <p style="color: var(--primary-light); opacity: 0.9; margin: 0;" id="welcomeDetails">Loading your academic details...</p>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card" style="cursor: pointer;" onclick="location.href='student-attendance.html'">
+                    <div class="stat-content">
+                        <h3>Overall Attendance</h3>
+                        <div class="stat-value" id="overallAttendance">--%</div>
+                    </div>
+                    <div class="stat-icon icon-blue">
+                        <i class="ri-calendar-check-fill"></i>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="cursor: pointer;" onclick="location.href='student-assignments.html'">
+                    <div class="stat-content">
+                        <h3>Pending Assignments</h3>
+                        <div class="stat-value" id="pendingAssignments">--</div>
+                    </div>
+                    <div class="stat-icon icon-amber">
+                        <i class="ri-book-read-fill"></i>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="cursor: pointer;" onclick="location.href='student-marks.html'">
+                    <div class="stat-content">
+                        <h3>Average Marks</h3>
+                        <div class="stat-value" id="avgMarks">--%</div>
+                    </div>
+                    <div class="stat-icon icon-green">
+                        <i class="ri-bar-chart-box-fill"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Announcements</h3>
+                </div>
+                <div class="card-body text-center text-muted py-4">
+                    <i class="ri-notification-3-line" style="font-size: 2rem; opacity: 0.5; margin-bottom: 0.5rem; display: block;"></i>
+                    <p>No new announcements from the faculty.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script type="module" src="js/student.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

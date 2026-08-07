@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - EduERP (Faculty)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), #4338ca);
+            color: white;
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+            transition: transform 0.2s ease;
+        }
+        .profile-avatar:hover { transform: scale(1.05); }
+        .profile-avatar-initials { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 2rem; letter-spacing: 1px; }
+
+        .detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 576px) { .detail-row { grid-template-columns: 1fr; } }
+
+        .detail-item label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.3rem; }
+        .detail-item p { font-size: 1rem; font-weight: 500; color: var(--secondary-color); margin: 0; }
+
+        .edit-section { background: var(--bg-color); border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--border-color); }
+        .edit-section .section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> Marks</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
+            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profile.html" class="nav-item active"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h1 class="page-title">My Profile</h1>
+            </div>
+            <div class="topbar-right">
+                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout"><i class="ri-logout-box-r-line"></i></button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div style="max-width: 720px; margin: 0 auto;">
+
+                <!-- Avatar Card -->
+                <div class="card" style="text-align: center; padding: 2.5rem 2rem;">
+                    <div class="profile-avatar">
+                        <span class="profile-avatar-initials" id="avatarInitials">?</span>
+                    </div>
+                    <h2 id="profileName" style="margin-bottom: 0.25rem; font-size: 1.5rem;">Loading...</h2>
+                    <p class="text-muted text-sm" style="margin-bottom: 0.75rem;">Faculty / Teacher</p>
+                    <div class="flex gap-2" style="justify-content: center; flex-wrap: wrap;">
+                        <span class="badge badge-primary" id="profileDept"></span>
+                        <span class="badge badge-success">Faculty</span>
+                    </div>
+                </div>
+
+                <!-- View Mode Card -->
+                <div class="card" id="viewCard">
+                    <div class="card-header">
+                        <h3 class="card-title">Account Details</h3>
+                        <button id="editProfileBtn" class="btn btn-secondary">
+                            <i class="ri-edit-line"></i> Edit Profile
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <label>Full Name</label>
+                                <p id="viewName">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Email Address</label>
+                                <p id="viewEmail" style="color: var(--text-muted);">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Department</label>
+                                <p id="viewDepartment">--</p>
+                            </div>
+                            <div class="detail-item">
+                                <label>Account Role</label>
+                                <p>Faculty / Teacher</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Mode Card (hidden by default) -->
+                <div class="card d-none" id="editCard">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #4338ca); border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
+                        <h3 class="card-title" style="color: white;"><i class="ri-edit-2-line"></i> Edit Your Profile</h3>
+                        <button id="cancelEditBtn" class="btn" style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                            <i class="ri-close-line"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="card-body" style="padding: 1.75rem;">
+
+                        <div class="edit-section mb-4">
+                            <p class="section-title"><i class="ri-user-line"></i> Personal Information</p>
+                            <div class="form-group">
+                                <label class="form-label">Full Name <span style="color:var(--danger-color)">*</span></label>
+                                <input type="text" id="editName" class="form-control" placeholder="Your full name">
+                            </div>
+                        </div>
+
+                        <div class="edit-section mb-4">
+                            <p class="section-title"><i class="ri-building-line"></i> Department</p>
+                            <div class="form-group">
+                                <label class="form-label">Department</label>
+                                <select id="editDept" class="form-select">
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Mechanical">Mechanical</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--warning-light); border-left: 3px solid var(--warning-color); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--warning-text);">
+                            <strong><i class="ri-information-line"></i> Note:</strong> Email address cannot be changed here as it is linked to your login credentials.
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button id="saveProfileBtn" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                                <i class="ri-save-3-line"></i> Save Changes
+                            </button>
+                            <button id="cancelEditBtn2" class="btn btn-secondary">Discard</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script type="module" src="js/profile.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Reports - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> Marks</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
+            <a href="reports.html" class="nav-item active"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h1 class="page-title">Attendance Reports</h1>
+            </div>
+            <div class="topbar-right">
+                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <!-- Filters -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filter Report</h3>
+                </div>
+                <div class="card-body">
+                    <div class="filter-bar" style="margin-bottom: 0; background: transparent; padding: 0; border: none;">
+                        <div class="filter-group">
+                            <label>Department</label>
+                            <select id="filterDept" class="form-select">
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Mechanical">Mechanical</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Year</label>
+                            <select id="filterYear" class="form-select">
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Section</label>
+                            <select id="filterSection" class="form-select">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Subject (leave blank for all)</label>
+                            <input type="text" id="filterSubject" class="form-control" placeholder="e.g. CS301 or leave blank">
+                        </div>
+                        <div class="filter-group" style="flex: 0 0 auto;">
+                            <button id="generateReportBtn" class="btn btn-primary" style="height: 42px; margin-top: 22px;">
+                                <i class="ri-bar-chart-2-line"></i> Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div id="summaryStats" class="stat-grid d-none">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Total Classes</h3>
+                        <div class="stat-value" id="totalClasses">0</div>
+                    </div>
+                    <div class="stat-icon icon-blue"><i class="ri-calendar-line"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Students in Class</h3>
+                        <div class="stat-value" id="totalStudentsInClass">0</div>
+                    </div>
+                    <div class="stat-icon icon-green"><i class="ri-group-fill"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Avg Attendance</h3>
+                        <div class="stat-value" id="avgAttendance">0%</div>
+                    </div>
+                    <div class="stat-icon icon-amber"><i class="ri-percent-line"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Below 75%</h3>
+                        <div class="stat-value" id="belowThreshold">0</div>
+                    </div>
+                    <div class="stat-icon icon-red"><i class="ri-alert-line"></i></div>
+                </div>
+            </div>
+
+            <!-- Report Table -->
+            <div class="card d-none" id="reportTableCard">
+                <div class="card-header">
+                    <h3 class="card-title">Student-wise Attendance Summary</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Total</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="card" id="emptyState">
+                <div class="empty-state">
+                    <i class="ri-bar-chart-box-line empty-state-icon"></i>
+                    <h3>Generate a Report</h3>
+                    <p>Select filters above and click "Generate Report" to view attendance analytics.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script type="module" src="js/reports.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>

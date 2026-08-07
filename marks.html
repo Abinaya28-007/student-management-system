@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Marks - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                EduERP
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="marks.html" class="nav-item active"><i class="ri-file-text-line nav-icon"></i> Marks</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
+            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </div>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h1 class="page-title">Manage Marks</h1>
+            </div>
+            <div class="topbar-right">
+                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Marks Records</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="searchMarks" class="form-control" placeholder="Search by roll no or subject..." style="width: 250px; margin-bottom: 0;">
+                        <button id="addMarkBtn" class="btn btn-primary"><i class="ri-add-line"></i> Add Mark</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Exam</th>
+                                <th>Mark</th>
+                                <th>Max Mark</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marksTableBody">
+                            <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="marksModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="marksModalTitle">Add Mark</h3>
+            <button class="modal-close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="markId">
+            <div class="form-group">
+                <label class="form-label">Select Class (Filters Students)</label>
+                <div class="flex gap-2 mb-2">
+                    <select id="filterDept" class="form-select">
+                        <option value="Computer Science">CS</option>
+                        <option value="Information Technology">IT</option>
+                        <option value="Electronics">ECE</option>
+                        <option value="Mechanical">MECH</option>
+                    </select>
+                    <select id="filterYear" class="form-select">
+                        <option value="I">Yr I</option><option value="II">Yr II</option><option value="III">Yr III</option><option value="IV">Yr IV</option>
+                    </select>
+                    <select id="filterSection" class="form-select">
+                        <option value="A">Sec A</option><option value="B">Sec B</option><option value="C">Sec C</option>
+                    </select>
+                    <button id="loadStudentsBtn" class="btn btn-secondary" style="padding: 0.5rem;"><i class="ri-refresh-line"></i></button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Select Student</label>
+                <select id="markStudent" class="form-select" required>
+                    <option value="">-- Load students first --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Subject</label>
+                <input type="text" id="markSubject" class="form-control" placeholder="e.g. Data Structures" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Exam Name</label>
+                <input type="text" id="markExam" class="form-control" placeholder="e.g. Midterm 1" required>
+            </div>
+            <div class="flex gap-3">
+                <div class="form-group w-100">
+                    <label class="form-label">Mark Obtained</label>
+                    <input type="number" id="markValue" class="form-control" min="0" required>
+                </div>
+                <div class="form-group w-100">
+                    <label class="form-label">Maximum Mark</label>
+                    <input type="number" id="markMax" class="form-control" min="1" value="100" required>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary modal-close-btn">Cancel</button>
+            <button id="saveMarkBtn" class="btn btn-primary">Save Mark</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script type="module" src="js/marks.js"></script>
+<script>
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+</body>
+</html>
