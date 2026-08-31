@@ -11,170 +11,138 @@
 
 <div class="app-container">
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a href="faculty-dashboard.html" class="brand">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
-        
         <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item">
-                <i class="ri-dashboard-line nav-icon"></i>
-                Dashboard
-            </a>
-            <a href="students.html" class="nav-item">
-                <i class="ri-group-line nav-icon"></i>
-                Students
-            </a>
-            <a href="attendance.html" class="nav-item active">
-                <i class="ri-calendar-check-line nav-icon"></i>
-                Attendance
-            </a>
-            <a href="marks.html" class="nav-item">
-                <i class="ri-file-text-line nav-icon"></i>
-                Marks
-            </a>
-            <a href="assignments.html" class="nav-item">
-                <i class="ri-book-read-line nav-icon"></i>
-                Assignments
-            </a>
-            <a href="reports.html" class="nav-item">
-                <i class="ri-bar-chart-box-line nav-icon"></i>
-                Reports
-            </a>
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="academic.html" class="nav-item"><i class="ri-building-line nav-icon"></i> Academic Data</a>
+            <a href="students.html" class="nav-item"><i class="ri-user-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item active"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="attendance-report.html" class="nav-item"><i class="ri-file-list-3-line nav-icon"></i> Attendance Report</a>
+            <a href="marks.html" class="nav-item"><i class="ri-award-line nav-icon"></i> Marks Management</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-open-line nav-icon"></i> Assignments</a>
+            <a href="leave.html" class="nav-item"><i class="ri-pass-valid-line nav-icon"></i> Leave Requests</a>
+            <a href="notifications.html" class="nav-item"><i class="ri-notification-3-line nav-icon"></i> Notifications</a>
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
         </nav>
-        
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item">
-                <i class="ri-user-settings-line nav-icon"></i>
-                Profile
-            </a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-wrapper">
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
-                <button class="mobile-toggle" id="mobileToggle">
-                    <i class="ri-menu-line"></i>
-                </button>
-                <h1 class="page-title">Daily Attendance</h1>
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h2 class="page-title">Daily Attendance Management</h2>
             </div>
-            
             <div class="topbar-right">
-                <div class="user-profile" onclick="location.href='profile.html'">
-                    <div class="avatar"><i class="ri-user-fill"></i></div>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
                 </div>
-                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout">
-                    <i class="ri-logout-box-r-line"></i>
-                </button>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">FC</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">Faculty Admin</span>
+                        <span class="user-role" id="navUserRole">Faculty</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
-            
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="form-label">Department *</label>
+                    <select id="attDept" class="form-select select-dept" required>
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Year *</label>
+                    <select id="attYear" class="form-select select-year" required>
+                        <option value="">Select Year</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Section *</label>
+                    <select id="attSection" class="form-select select-section" required>
+                        <option value="">Select Section</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Subject *</label>
+                    <select id="attSubject" class="form-select select-subject" required>
+                        <option value="">Select Subject</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Date *</label>
+                    <input type="date" id="attDate" class="form-control" required>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="loadAttendanceBtn"><i class="ri-refresh-line"></i> Load Class</button>
+                </div>
+            </div>
+
+            <!-- Attendance Table Card -->
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Select Class Criteria</h3>
-                </div>
-                <div class="card-body">
-                    <div class="filter-bar" style="margin-bottom: 0; background: transparent; padding: 0; border: none;">
-                        <div class="filter-group">
-                            <label>Department</label>
-                            <select id="filterDept" class="form-select">
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Information Technology">Information Technology</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Mechanical">Mechanical</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Year</label>
-                            <select id="filterYear" class="form-select">
-                                <option value="I">I</option>
-                                <option value="II">II</option>
-                                <option value="III">III</option>
-                                <option value="IV">IV</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Section</label>
-                            <select id="filterSection" class="form-select">
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Subject Code/Name</label>
-                            <input type="text" id="filterSubject" class="form-control" placeholder="e.g. CS301" required>
-                        </div>
-                        <div class="filter-group">
-                            <label>Date</label>
-                            <input type="date" id="filterDate" class="form-control" required>
-                        </div>
-                        <div class="filter-group" style="flex: 0 0 auto;">
-                            <button id="loadStudentsBtn" class="btn btn-primary w-100 mt-4" style="height: 42px;">Load Students</button>
-                        </div>
+                <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3 class="card-title">Class Roll Call (<span id="attStudentCount">0</span> Students)</h3>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);" id="attClassSummary">Select class criteria and date above to load student list.</div>
                     </div>
-                </div>
-            </div>
-
-            <div id="attendanceSection" class="card d-none">
-                <div class="card-header">
-                    <h3 class="card-title">Mark Attendance</h3>
                     <div class="flex gap-2">
-                        <button id="markAllPresentBtn" class="btn btn-secondary text-sm"><i class="ri-check-line text-success"></i> Mark All Present</button>
-                        <button id="markAllAbsentBtn" class="btn btn-secondary text-sm"><i class="ri-close-line text-danger"></i> Mark All Absent</button>
+                        <button class="btn btn-secondary" id="markAllPresentBtn"><i class="ri-checkbox-circle-line text-success"></i> Mark All Present</button>
+                        <button class="btn btn-secondary" id="markAllAbsentBtn"><i class="ri-close-circle-line text-danger"></i> Mark All Absent</button>
+                        <button class="btn btn-primary" id="saveAttendanceBtn"><i class="ri-save-line"></i> Save Attendance</button>
+                        <button class="btn btn-danger" id="deleteAttendanceBtn"><i class="ri-delete-bin-line"></i> Delete Session</button>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Roll No</th>
-                                <th>Student Name</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendanceTableBody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-body border-t border-color" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                    <div class="flex gap-4">
-                        <div><span class="badge badge-success">Present: <span id="countPresent">0</span></span></div>
-                        <div><span class="badge badge-danger">Absent: <span id="countAbsent">0</span></span></div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Student Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Toggle Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <tr><td colspan="5" class="text-center text-muted">Please select Department, Year, Section, Subject and Date, then click "Load Class".</td></tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <button id="saveAttendanceBtn" class="btn btn-primary"><i class="ri-save-3-line"></i> Save Attendance</button>
                 </div>
             </div>
-
-            <div id="emptyState" class="card">
-                <div class="empty-state">
-                    <i class="ri-user-search-line empty-state-icon"></i>
-                    <h3>No class selected</h3>
-                    <p>Please select department, year, section, subject and date to load students.</p>
-                </div>
-            </div>
-
-        </div>
-    </main>
+        </main>
+    </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
 
 <script type="module" src="js/attendance.js"></script>
-<script>
-    // Set today's date as default
-    document.getElementById('filterDate').valueAsDate = new Date();
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
 </body>
 </html>

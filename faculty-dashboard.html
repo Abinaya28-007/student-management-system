@@ -6,170 +6,184 @@
     <title>Faculty Dashboard - EduERP</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="app-container">
     <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a href="faculty-dashboard.html" class="brand">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
-        
         <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item active">
-                <i class="ri-dashboard-line nav-icon"></i>
-                Dashboard
-            </a>
-            <a href="students.html" class="nav-item">
-                <i class="ri-group-line nav-icon"></i>
-                Students
-            </a>
-            <a href="attendance.html" class="nav-item">
-                <i class="ri-calendar-check-line nav-icon"></i>
-                Attendance
-            </a>
-            <a href="marks.html" class="nav-item">
-                <i class="ri-file-text-line nav-icon"></i>
-                Marks
-            </a>
-            <a href="assignments.html" class="nav-item">
-                <i class="ri-book-read-line nav-icon"></i>
-                Assignments
-            </a>
-            <a href="reports.html" class="nav-item">
-                <i class="ri-bar-chart-box-line nav-icon"></i>
-                Reports
-            </a>
+            <a href="faculty-dashboard.html" class="nav-item active"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="academic.html" class="nav-item"><i class="ri-building-line nav-icon"></i> Academic Data</a>
+            <a href="students.html" class="nav-item"><i class="ri-user-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="attendance-report.html" class="nav-item"><i class="ri-file-list-3-line nav-icon"></i> Attendance Report</a>
+            <a href="marks.html" class="nav-item"><i class="ri-award-line nav-icon"></i> Marks Management</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-open-line nav-icon"></i> Assignments</a>
+            <a href="leave.html" class="nav-item"><i class="ri-pass-valid-line nav-icon"></i> Leave Requests</a>
+            <a href="notifications.html" class="nav-item"><i class="ri-notification-3-line nav-icon"></i> Notifications</a>
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
         </nav>
-        
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item">
-                <i class="ri-user-settings-line nav-icon"></i>
-                Profile
-            </a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="main-wrapper">
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
-                <button class="mobile-toggle" id="mobileToggle">
-                    <i class="ri-menu-line"></i>
-                </button>
-                <h1 class="page-title">Faculty Dashboard</h1>
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h2 class="page-title">Faculty Dashboard</h2>
             </div>
-            
             <div class="topbar-right">
-                <div class="user-profile" onclick="location.href='profile.html'">
-                    <div class="user-info text-right d-none d-sm-block" style="display: block;">
-                        <div class="user-name" id="userName">Loading...</div>
-                        <div class="user-role">Faculty</div>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
                     </div>
-                    <div class="avatar"><i class="ri-user-fill"></i></div>
                 </div>
-                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout">
-                    <i class="ri-logout-box-r-line"></i>
-                </button>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">FC</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">Faculty User</span>
+                        <span class="user-role" id="navUserRole">Faculty</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
-            
-            <div class="card" style="background: linear-gradient(135deg, var(--primary-color) 0%, #312e81 100%); color: white; border: none;">
-                <div class="card-body">
-                    <h2 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;">Welcome back, <span id="welcomeName">Faculty</span>! 👋</h2>
-                    <p style="color: var(--primary-light); opacity: 0.9; margin: 0;">Here's an overview of your academic operations today.</p>
-                </div>
-            </div>
-
-            <div class="stat-grid">
-                <div class="stat-card" style="cursor: pointer;" onclick="location.href='students.html'">
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- 8 Key Metrics Cards -->
+            <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <div class="stat-card">
                     <div class="stat-content">
                         <h3>Total Students</h3>
-                        <div class="stat-value" id="totalStudents">--</div>
+                        <div class="stat-value" id="dashTotalStudents">0</div>
                     </div>
-                    <div class="stat-icon icon-blue">
-                        <i class="ri-group-fill"></i>
-                    </div>
+                    <div class="stat-icon icon-blue"><i class="ri-user-line"></i></div>
                 </div>
-                
-                <div class="stat-card" style="cursor: pointer;" onclick="location.href='attendance.html'">
+
+                <div class="stat-card">
                     <div class="stat-content">
-                        <h3>Today's Attendance</h3>
-                        <div class="stat-value" id="todayAttendance">--%</div>
+                        <h3>Total Faculty</h3>
+                        <div class="stat-value" id="dashTotalFaculty">0</div>
                     </div>
-                    <div class="stat-icon icon-green">
-                        <i class="ri-calendar-check-fill"></i>
-                    </div>
+                    <div class="stat-icon icon-green"><i class="ri-user-star-line"></i></div>
                 </div>
-                
-                <div class="stat-card" style="cursor: pointer;" onclick="location.href='assignments.html'">
+
+                <div class="stat-card">
                     <div class="stat-content">
-                        <h3>Total Assignments</h3>
-                        <div class="stat-value" id="totalAssignments">--</div>
+                        <h3>Departments</h3>
+                        <div class="stat-value" id="dashTotalDepts">0</div>
                     </div>
-                    <div class="stat-icon icon-amber">
-                        <i class="ri-book-read-fill"></i>
+                    <div class="stat-icon icon-amber"><i class="ri-building-line"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Subjects</h3>
+                        <div class="stat-value" id="dashTotalSubjects">0</div>
+                    </div>
+                    <div class="stat-icon icon-blue"><i class="ri-book-open-line"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Today's Present</h3>
+                        <div class="stat-value" id="dashTodayPresent">0</div>
+                    </div>
+                    <div class="stat-icon icon-green"><i class="ri-checkbox-circle-line"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Today's Absent</h3>
+                        <div class="stat-value" id="dashTodayAbsent">0</div>
+                    </div>
+                    <div class="stat-icon icon-red"><i class="ri-close-circle-line"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Pending Leaves</h3>
+                        <div class="stat-value" id="dashPendingLeaves">0</div>
+                    </div>
+                    <div class="stat-icon icon-amber"><i class="ri-pass-valid-line"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <h3>Avg Attendance</h3>
+                        <div class="stat-value" id="dashAvgAttendance">0%</div>
+                    </div>
+                    <div class="stat-icon icon-blue"><i class="ri-pie-chart-line"></i></div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 1.5rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ri-pie-chart-fill text-primary"></i> Attendance Overview</h3>
+                    </div>
+                    <div class="card-body flex items-center justify-between" style="min-height: 280px;">
+                        <canvas id="attendanceChart" style="max-height: 250px;"></canvas>
                     </div>
                 </div>
 
-                <div class="stat-card" style="cursor: pointer;" onclick="location.href='marks.html'">
-                    <div class="stat-content">
-                        <h3>Marks Entered</h3>
-                        <div class="stat-value" id="totalMarks">--</div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ri-bar-chart-fill text-primary"></i> Department-wise Students</h3>
                     </div>
-                    <div class="stat-icon icon-red">
-                        <i class="ri-file-text-fill"></i>
+                    <div class="card-body" style="min-height: 280px;">
+                        <canvas id="deptChart" style="max-height: 250px;"></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Quick Actions</h3>
-                    </div>
-                    <div class="card-body flex gap-3" style="flex-direction: column;">
-                        <button class="btn btn-secondary w-100 justify-between" onclick="location.href='attendance.html'">
-                            <span class="flex items-center gap-2"><i class="ri-checkbox-circle-line text-muted"></i> Mark Daily Attendance</span>
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
-                        <button class="btn btn-secondary w-100 justify-between" onclick="location.href='marks.html'">
-                            <span class="flex items-center gap-2"><i class="ri-pencil-line text-muted"></i> Publish Marks</span>
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
-                        <button class="btn btn-secondary w-100 justify-between" onclick="location.href='assignments.html'">
-                            <span class="flex items-center gap-2"><i class="ri-add-line text-muted"></i> Create Assignment</span>
-                            <i class="ri-arrow-right-s-line"></i>
-                        </button>
-                    </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ri-line-chart-line text-primary"></i> Exam & Marks Performance Trend</h3>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Recent Activity</h3>
-                    </div>
-                    <div class="card-body text-center text-muted py-4">
-                        <i class="ri-time-line" style="font-size: 2rem; opacity: 0.5; margin-bottom: 0.5rem; display: block;"></i>
-                        <p>No recent activity.</p>
-                    </div>
+                <div class="card-body" style="min-height: 260px;">
+                    <canvas id="marksChart" style="max-height: 240px;"></canvas>
                 </div>
             </div>
 
-        </div>
-    </main>
+            <!-- Recent Activity Stream -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="ri-history-line text-primary"></i> Recent Activity Stream</h3>
+                </div>
+                <div class="card-body">
+                    <div id="recentActivityList" class="flex flex-column gap-3">
+                        <div class="text-center text-muted p-3"><span class="loader"></span> Loading recent activities...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
 
-<script type="module" src="js/faculty.js"></script>
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/faculty-dashboard.js"></script>
 </body>
 </html>

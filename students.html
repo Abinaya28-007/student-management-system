@@ -3,154 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students List - EduERP</title>
+    <title>Student Management - EduERP</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="app-container">
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a href="faculty-dashboard.html" class="brand">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
         <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item">
-                <i class="ri-dashboard-line nav-icon"></i> Dashboard
-            </a>
-            <a href="students.html" class="nav-item active">
-                <i class="ri-group-line nav-icon"></i> Students
-            </a>
-            <a href="attendance.html" class="nav-item">
-                <i class="ri-calendar-check-line nav-icon"></i> Attendance
-            </a>
-            <a href="marks.html" class="nav-item">
-                <i class="ri-file-text-line nav-icon"></i> Marks
-            </a>
-            <a href="assignments.html" class="nav-item">
-                <i class="ri-book-read-line nav-icon"></i> Assignments
-            </a>
-            <a href="reports.html" class="nav-item">
-                <i class="ri-bar-chart-box-line nav-icon"></i> Reports
-            </a>
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="academic.html" class="nav-item"><i class="ri-building-line nav-icon"></i> Academic Data</a>
+            <a href="students.html" class="nav-item active"><i class="ri-user-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="attendance-report.html" class="nav-item"><i class="ri-file-list-3-line nav-icon"></i> Attendance Report</a>
+            <a href="marks.html" class="nav-item"><i class="ri-award-line nav-icon"></i> Marks Management</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-open-line nav-icon"></i> Assignments</a>
+            <a href="leave.html" class="nav-item"><i class="ri-pass-valid-line nav-icon"></i> Leave Requests</a>
+            <a href="notifications.html" class="nav-item"><i class="ri-notification-3-line nav-icon"></i> Notifications</a>
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item">
-                <i class="ri-user-settings-line nav-icon"></i> Profile
-            </a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
-    <main class="main-wrapper">
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
                 <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
-                <h1 class="page-title">Manage Students</h1>
+                <h2 class="page-title">Student Directory & Profiles</h2>
             </div>
             <div class="topbar-right">
-                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout"><i class="ri-logout-box-r-line"></i></button>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">FC</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">Faculty Admin</span>
+                        <span class="user-role" id="navUserRole">Faculty</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group" style="flex: 2;">
+                    <label class="form-label"><i class="ri-search-line"></i> Search Student</label>
+                    <input type="text" id="searchStudent" class="form-control" placeholder="Search by name, roll number or email...">
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Department</label>
+                    <select id="filterDept" class="form-select select-dept">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Academic Year</label>
+                    <select id="filterYear" class="form-select select-year">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Section</label>
+                    <select id="filterSection" class="form-select select-section">
+                        <option value="">All Sections</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="addStudentBtn"><i class="ri-user-add-line"></i> Add Student Profile</button>
+                </div>
+            </div>
+
+            <!-- Student Table Card -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Registered Students</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="searchStudent" class="form-control" placeholder="Search by name or roll no..." style="width: 250px; margin-bottom: 0;">
-                        <button id="addStudentBtn" class="btn btn-primary"><i class="ri-user-add-line"></i> Add Student</button>
+                    <h3 class="card-title">Enrolled Student Profiles (<span id="studentRecordCount">0</span>)</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Student Name</th>
+                                    <th>Department</th>
+                                    <th>Year</th>
+                                    <th>Section</th>
+                                    <th>Email</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="7" class="text-center text-muted"><span class="loader"></span> Loading student profiles...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Roll No</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Department</th>
-                                <th>Year</th>
-                                <th>Section</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                            <tr><td colspan="7" class="text-center">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 </div>
 
-<!-- Add/Edit Modal -->
+<!-- Modal Form for Add/Edit Student -->
 <div class="modal-overlay" id="studentModal">
-    <div class="modal">
+    <div class="modal" style="max-width: 650px;">
         <div class="modal-header">
             <h3 class="modal-title" id="studentModalTitle">Add Student Profile</h3>
-            <button class="modal-close"><i class="ri-close-line"></i></button>
+            <button class="modal-close" id="closeStudentModal">&times;</button>
         </div>
         <div class="modal-body">
-            <p class="text-sm text-muted mb-3">Note: Adding a student here creates a database profile. To login, they must still register via the Registration page with the exact same email.</p>
             <input type="hidden" id="studentId">
-            <div class="form-group">
-                <label class="form-label">Name</label>
-                <input type="text" id="studentName" class="form-control" required>
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="studentName" class="form-label">Full Name *</label>
+                    <input type="text" id="studentName" class="form-control" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentRollNo" class="form-label">Roll Number *</label>
+                    <input type="text" id="studentRollNo" class="form-control" placeholder="e.g. CS2026-001" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" id="studentEmail" class="form-control" required>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="studentEmail" class="form-label">Email Address *</label>
+                    <input type="email" id="studentEmail" class="form-control" placeholder="john@college.edu" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentPhone" class="form-label">Phone Number</label>
+                    <input type="text" id="studentPhone" class="form-control" placeholder="+1 234 567 8900">
+                </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Roll Number</label>
-                <input type="text" id="studentRollNo" class="form-control" required>
-            </div>
-            <div class="flex gap-3">
-                <div class="form-group w-100">
-                    <label class="form-label">Department</label>
-                    <select id="studentDept" class="form-select">
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Information Technology">Information Technology</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mechanical">Mechanical</option>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="studentDept" class="form-label">Department *</label>
+                    <select id="studentDept" class="form-select select-dept" required>
+                        <option value="">Select Dept</option>
                     </select>
                 </div>
-                <div class="form-group w-100">
-                    <label class="form-label">Year</label>
-                    <select id="studentYear" class="form-select">
-                        <option value="I">I</option>
-                        <option value="II">II</option>
-                        <option value="III">III</option>
-                        <option value="IV">IV</option>
+                <div class="form-group">
+                    <label for="studentYear" class="form-label">Year *</label>
+                    <select id="studentYear" class="form-select select-year" required>
+                        <option value="">Select Year</option>
                     </select>
                 </div>
-                <div class="form-group w-100">
-                    <label class="form-label">Section</label>
-                    <select id="studentSection" class="form-select">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
+                <div class="form-group">
+                    <label for="studentSection" class="form-label">Section *</label>
+                    <select id="studentSection" class="form-select select-section" required>
+                        <option value="">Select Sec</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="studentDob" class="form-label">Date of Birth</label>
+                    <input type="date" id="studentDob" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="studentGender" class="form-label">Gender</label>
+                    <select id="studentGender" class="form-select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="studentAddress" class="form-label">Residential Address</label>
+                <textarea id="studentAddress" class="form-control" rows="2" placeholder="Full residential street address"></textarea>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary modal-close-btn">Cancel</button>
-            <button id="saveStudentBtn" class="btn btn-primary">Save Student</button>
+            <button class="btn btn-secondary" id="cancelStudentModal">Cancel</button>
+            <button class="btn btn-primary" id="saveStudentBtn"><i class="ri-save-line"></i> Save Student Profile</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal View Details -->
+<div class="modal-overlay" id="viewStudentModal">
+    <div class="modal" style="max-width: 520px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Student Information</h3>
+            <button class="modal-close" id="closeViewStudentModal">&times;</button>
+        </div>
+        <div class="modal-body" id="viewStudentContent">
+            <!-- Dynamic Content -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="closeViewBtn">Close</button>
         </div>
     </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
+
 <script type="module" src="js/students.js"></script>
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
 </body>
 </html>

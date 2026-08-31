@@ -3,141 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Marks - EduERP</title>
+    <title>Marks & Grades Management - EduERP</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="app-container">
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="faculty-dashboard.html" class="brand">
+            <a href="faculty-dashboard.html" class="brand" id="brandLink">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
-        <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
-            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
-            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
-            <a href="marks.html" class="nav-item active"><i class="ri-file-text-line nav-icon"></i> Marks</a>
-            <a href="assignments.html" class="nav-item"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
-            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamic Nav -->
         </nav>
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
-    <main class="main-wrapper">
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
                 <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
-                <h1 class="page-title">Manage Marks</h1>
+                <h2 class="page-title">Marks & Grades Management</h2>
             </div>
             <div class="topbar-right">
-                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">User</span>
+                        <span class="user-role" id="navUserRole">Role</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Marks Records</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="searchMarks" class="form-control" placeholder="Search by roll no or subject..." style="width: 250px; margin-bottom: 0;">
-                        <button id="addMarkBtn" class="btn btn-primary"><i class="ri-add-line"></i> Add Mark</button>
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Unified 4 Tabs Header Bar -->
+            <div class="card mb-4">
+                <div class="card-body" style="padding: 1rem 1.5rem; background-color: var(--bg-color);">
+                    <div class="flex gap-2" style="flex-wrap: wrap;">
+                        <button class="btn btn-primary marks-tab-btn active" data-tab="tabAssignMarks">
+                            <i class="ri-task-line"></i> Assignment Marks
+                        </button>
+                        <button class="btn btn-secondary marks-tab-btn" data-tab="tabInternalMarks">
+                            <i class="ri-file-text-line"></i> Internal Marks
+                        </button>
+                        <button class="btn btn-secondary marks-tab-btn" data-tab="tabExamMarks">
+                            <i class="ri-award-line"></i> Exam Marks
+                        </button>
+                        <button class="btn btn-secondary marks-tab-btn" data-tab="tabOverallPerf">
+                            <i class="ri-pie-chart-line"></i> Overall Performance
+                        </button>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Roll No</th>
-                                <th>Student Name</th>
-                                <th>Subject</th>
-                                <th>Exam</th>
-                                <th>Mark</th>
-                                <th>Max Mark</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="marksTableBody">
-                            <tr><td colspan="7" class="text-center">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
-    </main>
-</div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="marksModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title" id="marksModalTitle">Add Mark</h3>
-            <button class="modal-close"><i class="ri-close-line"></i></button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" id="markId">
-            <div class="form-group">
-                <label class="form-label">Select Class (Filters Students)</label>
-                <div class="flex gap-2 mb-2">
-                    <select id="filterDept" class="form-select">
-                        <option value="Computer Science">CS</option>
-                        <option value="Information Technology">IT</option>
-                        <option value="Electronics">ECE</option>
-                        <option value="Mechanical">MECH</option>
-                    </select>
-                    <select id="filterYear" class="form-select">
-                        <option value="I">Yr I</option><option value="II">Yr II</option><option value="III">Yr III</option><option value="IV">Yr IV</option>
-                    </select>
-                    <select id="filterSection" class="form-select">
-                        <option value="A">Sec A</option><option value="B">Sec B</option><option value="C">Sec C</option>
-                    </select>
-                    <button id="loadStudentsBtn" class="btn btn-secondary" style="padding: 0.5rem;"><i class="ri-refresh-line"></i></button>
+            <!-- TAB 1: ASSIGNMENT MARKS -->
+            <div id="tabAssignMarks" class="marks-tab-content">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label class="form-label">Department</label>
+                        <select id="amDept" class="form-select select-dept">
+                            <option value="">Select Department</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Year</label>
+                        <select id="amYear" class="form-select select-year">
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Section</label>
+                        <select id="amSection" class="form-select select-section">
+                            <option value="">Select Section</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Subject</label>
+                        <select id="amSubject" class="form-select select-subject">
+                            <option value="">Select Subject</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Assignment *</label>
+                        <select id="amAssignment" class="form-select">
+                            <option value="">Select Assignment</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="amLoadBtn"><i class="ri-refresh-line"></i> Load Marks</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 class="card-title">Assignment Marks Entry</h3>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);" id="amSummaryText">Select class criteria and assignment above.</div>
+                        </div>
+                        <div class="flex gap-2" id="amFacultyActions">
+                            <button class="btn btn-primary" id="amSaveAllBtn"><i class="ri-save-line"></i> Save All Marks</button>
+                            <button class="btn btn-danger" id="amDeleteAllBtn"><i class="ri-delete-bin-line"></i> Delete Session</button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Assignment Title</th>
+                                        <th>Max Marks</th>
+                                        <th style="width: 180px;">Obtained Marks</th>
+                                        <th>Percentage</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="amTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Please select class criteria and click "Load Marks".</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Select Student</label>
-                <select id="markStudent" class="form-select" required>
-                    <option value="">-- Load students first --</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Subject</label>
-                <input type="text" id="markSubject" class="form-control" placeholder="e.g. Data Structures" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Exam Name</label>
-                <input type="text" id="markExam" class="form-control" placeholder="e.g. Midterm 1" required>
-            </div>
-            <div class="flex gap-3">
-                <div class="form-group w-100">
-                    <label class="form-label">Mark Obtained</label>
-                    <input type="number" id="markValue" class="form-control" min="0" required>
+
+            <!-- TAB 2: INTERNAL MARKS -->
+            <div id="tabInternalMarks" class="marks-tab-content d-none">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label class="form-label">Department</label>
+                        <select id="imDept" class="form-select select-dept">
+                            <option value="">Select Dept</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Year</label>
+                        <select id="imYear" class="form-select select-year">
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Section</label>
+                        <select id="imSection" class="form-select select-section">
+                            <option value="">Select Section</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Subject</label>
+                        <select id="imSubject" class="form-select select-subject">
+                            <option value="">Select Subject</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="imLoadBtn"><i class="ri-refresh-line"></i> Load Internal Marks</button>
+                    </div>
                 </div>
-                <div class="form-group w-100">
-                    <label class="form-label">Maximum Mark</label>
-                    <input type="number" id="markMax" class="form-control" min="1" value="100" required>
+
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 class="card-title">Internal Assessment Components</h3>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Test 1 (20) + Test 2 (20) + Assignment (10) + Seminar (10) + Practical (40) = Total (100)</div>
+                        </div>
+                        <div id="imFacultyActions">
+                            <button class="btn btn-primary" id="imSaveAllBtn"><i class="ri-save-line"></i> Save Internal Marks</button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th style="width: 100px;">Test 1 (20)</th>
+                                        <th style="width: 100px;">Test 2 (20)</th>
+                                        <th style="width: 100px;">Assign (10)</th>
+                                        <th style="width: 100px;">Sem (10)</th>
+                                        <th style="width: 100px;">Prac (40)</th>
+                                        <th>Total (100)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="imTableBody">
+                                    <tr><td colspan="8" class="text-center text-muted">Please select criteria and click "Load Internal Marks".</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary modal-close-btn">Cancel</button>
-            <button id="saveMarkBtn" class="btn btn-primary">Save Mark</button>
-        </div>
+
+            <!-- TAB 3: EXAM / SEMESTER MARKS -->
+            <div id="tabExamMarks" class="marks-tab-content d-none">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label class="form-label">Department</label>
+                        <select id="emDept" class="form-select select-dept">
+                            <option value="">Select Dept</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Year</label>
+                        <select id="emYear" class="form-select select-year">
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Semester</label>
+                        <select id="emSemester" class="form-select">
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5">Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                            <option value="Semester 7">Semester 7</option>
+                            <option value="Semester 8">Semester 8</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Exam Type</label>
+                        <select id="emExamType" class="form-select">
+                            <option value="Semester">Semester Final Exam</option>
+                            <option value="Internal">Internal Exam</option>
+                            <option value="Model">Model Exam</option>
+                            <option value="Practical">Practical Lab Exam</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Subject</label>
+                        <select id="emSubject" class="form-select select-subject">
+                            <option value="">Select Subject</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="emLoadBtn"><i class="ri-refresh-line"></i> Load Exam Marks</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 class="card-title">Exam & Semester Grade Sheet</h3>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Grade Scale: 90-100 (A+), 80-89 (A), 70-79 (B+), 60-69 (B), 50-59 (C), &lt;50 (F)</div>
+                        </div>
+                        <div id="emFacultyActions">
+                            <button class="btn btn-primary" id="emSaveAllBtn"><i class="ri-save-line"></i> Save Exam Marks</button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Roll No</th>
+                                        <th>Student Name</th>
+                                        <th>Subject</th>
+                                        <th>Max Marks</th>
+                                        <th style="width: 160px;">Obtained Marks</th>
+                                        <th>Percentage</th>
+                                        <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="emTableBody">
+                                    <tr><td colspan="7" class="text-center text-muted">Please select criteria and click "Load Exam Marks".</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: OVERALL PERFORMANCE -->
+            <div id="tabOverallPerf" class="marks-tab-content d-none">
+                <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Assignment Avg</h3>
+                            <div class="stat-value" id="opAssignAvg">0%</div>
+                        </div>
+                        <div class="stat-icon icon-blue"><i class="ri-task-line"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Internal Avg</h3>
+                            <div class="stat-value" id="opInternalAvg">0%</div>
+                        </div>
+                        <div class="stat-icon icon-amber"><i class="ri-file-text-line"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Exam Avg</h3>
+                            <div class="stat-value" id="opExamAvg">0%</div>
+                        </div>
+                        <div class="stat-icon icon-green"><i class="ri-award-line"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <h3>Overall Grade</h3>
+                            <div class="stat-value" id="opOverallGrade">A</div>
+                        </div>
+                        <div class="stat-icon icon-green"><i class="ri-star-line"></i></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="ri-line-chart-fill text-primary"></i> Comprehensive Marks Performance Breakdown</h3>
+                    </div>
+                    <div class="card-body" style="min-height: 300px;">
+                        <canvas id="overallPerfChart" style="max-height: 280px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
+
 <script type="module" src="js/marks.js"></script>
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
 </body>
 </html>

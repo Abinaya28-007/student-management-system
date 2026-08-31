@@ -1,221 +1,247 @@
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { db } from "./firebase-config.js";
+import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { 
+    initLayout, 
+    showToast, 
+    showConfirm, 
+    currentUser, 
+    getFilteredSubjects, 
+    populateSelectOptions, 
+    sendNotification 
+} from "./common.js";
 
-let facultyUid = null;
-let currentLoadedStudents = [];
+let loadedStudents = [];
+let currentAttendanceState = {}; // studentUid -> "present" | "absent"
 
-// Basic Toast implementation
-function showToast(message, type = "success") {
-    const container = document.getElementById("toast-container");
-    if (!container) return;
-    const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
-    let icon = "ri-check-line";
-    if (type === "error") icon = "ri-error-warning-line";
-    toast.innerHTML = `<i class="${icon} toast-icon"></i><span class="toast-message">${message}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add("show"), 10);
-    setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 400); }, 3000);
-}
+document.addEventListener("DOMContentLoaded", async () => {
+    await initLayout("faculty");
 
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "index.html";
-        return;
+    // Default to today's date
+    const dateInput = document.getElementById("attDate");
+    if (dateInput) {
+        dateInput.value = new Date().toISOString().split("T")[0];
     }
-    try {
-        const snap = await get(ref(db, "users/" + user.uid));
-        if (!snap.exists() || snap.val().role !== "faculty") {
-            window.location.href = "index.html";
-            return;
-        }
-        facultyUid = user.uid;
-    } catch (e) {
-        window.location.href = "index.html";
-    }
+
+    // Dynamic subjects update on dept/year change
+    const deptSelect = document.getElementById("attDept");
+    const yearSelect = document.getElementById("attYear");
+    const subjSelect = document.getElementById("attSubject");
+
+    const updateSubjects = () => {
+        const d = deptSelect.value;
+        const y = yearSelect.value;
+        const subjs = getFilteredSubjects(d, y);
+        populateSelectOptions(subjSelect, subjs, "name", "Select Subject");
+    };
+
+    if (deptSelect) deptSelect.addEventListener("change", updateSubjects);
+    if (yearSelect) yearSelect.addEventListener("change", updateSubjects);
+
+    // Load Attendance List
+    document.getElementById("loadAttendanceBtn").addEventListener("click", loadClassStudents);
+
+    // Batch Actions
+    document.getElementById("markAllPresentBtn").addEventListener("click", () => {
+        setAllStatus("present");
+    });
+    document.getElementById("markAllAbsentBtn").addEventListener("click", () => {
+        setAllStatus("absent");
+    });
+
+    // Save Attendance
+    document.getElementById("saveAttendanceBtn").addEventListener("click", saveAttendance);
+
+    // Delete Attendance
+    document.getElementById("deleteAttendanceBtn").addEventListener("click", deleteAttendanceSession);
 });
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "index.html";
-});
+async function loadClassStudents() {
+    const dept = document.getElementById("attDept").value;
+    const year = document.getElementById("attYear").value;
+    const sec = document.getElementById("attSection").value;
+    const subj = document.getElementById("attSubject").value;
+    const date = document.getElementById("attDate").value;
 
-// Load Students Logic
-document.getElementById("loadStudentsBtn").addEventListener("click", async () => {
-    const dept = document.getElementById("filterDept").value;
-    const year = document.getElementById("filterYear").value;
-    const section = document.getElementById("filterSection").value;
-    const subject = document.getElementById("filterSubject").value.trim();
-    const date = document.getElementById("filterDate").value;
-
-    if (!subject) {
-        showToast("Please enter a subject code/name.", "error");
-        return;
-    }
-    if (!date) {
-        showToast("Please select a date.", "error");
+    if (!dept || !year || !sec || !subj || !date) {
+        showToast("Please select Department, Year, Section, Subject and Date.", "warning");
         return;
     }
 
-    const btn = document.getElementById("loadStudentsBtn");
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="loader" style="width: 16px; height: 16px; border-width: 2px;"></span>';
-    btn.disabled = true;
+    const tableBody = document.getElementById("attendanceTableBody");
+    tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted"><span class="loader"></span> Loading class students...</td></tr>`;
 
     try {
         // 1. Fetch Students
-        const studentsSnap = await get(ref(db, "users"));
-        currentLoadedStudents = [];
-        
-        if (studentsSnap.exists()) {
-            const users = studentsSnap.val();
-            for (let uid in users) {
+        const usersSnap = await get(ref(db, "users"));
+        loadedStudents = [];
+        currentAttendanceState = {};
+
+        if (usersSnap.exists()) {
+            const users = usersSnap.val();
+            Object.keys(users).forEach(uid => {
                 const u = users[uid];
-                if (u.role === 'student' && u.department === dept && u.year === year && u.section === section) {
-                    currentLoadedStudents.push({
-                        uid: uid,
-                        name: u.name,
-                        rollNo: u.rollNo || 'N/A'
-                    });
+                if (u.role === "student" && u.department === dept && u.year === year && u.section === sec) {
+                    loadedStudents.push({ uid, ...u });
                 }
-            }
+            });
         }
 
-        // Sort by Roll No
-        currentLoadedStudents.sort((a, b) => a.rollNo.localeCompare(b.rollNo));
+        loadedStudents.sort((a, b) => (a.rollNo || "").localeCompare(b.rollNo || ""));
 
-        if (currentLoadedStudents.length === 0) {
-            document.getElementById("emptyState").classList.remove("d-none");
-            document.getElementById("emptyState").innerHTML = `
-                <div class="empty-state">
-                    <i class="ri-user-unfollow-line empty-state-icon"></i>
-                    <h3>No Students Found</h3>
-                    <p>No students match the selected Department, Year, and Section.</p>
-                </div>
-            `;
-            document.getElementById("attendanceSection").classList.add("d-none");
+        // 2. Fetch Existing Attendance for Date & Subject
+        const attRefStr = `attendance/${date}/${subj}`;
+        const attSnap = await get(ref(db, attRefStr));
+        if (attSnap.exists()) {
+            const savedAtt = attSnap.val();
+            loadedStudents.forEach(s => {
+                if (savedAtt[s.uid]) {
+                    currentAttendanceState[s.uid] = savedAtt[s.uid].status || "present";
+                } else {
+                    currentAttendanceState[s.uid] = "present";
+                }
+            });
         } else {
-            document.getElementById("emptyState").classList.add("d-none");
-            document.getElementById("attendanceSection").classList.remove("d-none");
-            
-            // 2. Fetch Existing Attendance for this Date & Subject
-            let existingAtt = {};
-            const attSnap = await get(ref(db, `attendance/${date}/${subject}`));
-            if (attSnap.exists()) {
-                existingAtt = attSnap.val();
-            }
-
-            // 3. Render Table
-            const tbody = document.getElementById("attendanceTableBody");
-            tbody.innerHTML = "";
-            
-            currentLoadedStudents.forEach(student => {
-                const existingStatus = existingAtt[student.uid] ? existingAtt[student.uid].status : 'present'; // Default present
-                
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><strong>${student.rollNo}</strong></td>
-                    <td>${student.name}</td>
-                    <td>
-                        <select class="form-select att-status-select" data-uid="${student.uid}" style="max-width: 150px; padding: 0.3rem 0.5rem; ${existingStatus === 'absent' ? 'border-color: var(--danger-color); color: var(--danger-color);' : 'border-color: var(--success-color); color: var(--success-color);'}">
-                            <option value="present" ${existingStatus === 'present' ? 'selected' : ''}>Present</option>
-                            <option value="absent" ${existingStatus === 'absent' ? 'selected' : ''}>Absent</option>
-                        </select>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            // Default all to present
+            loadedStudents.forEach(s => {
+                currentAttendanceState[s.uid] = "present";
             });
-
-            // Add event listeners to selects for color change and recount
-            document.querySelectorAll('.att-status-select').forEach(sel => {
-                sel.addEventListener('change', (e) => {
-                    updateSelectColor(e.target);
-                    updateCounts();
-                });
-            });
-
-            updateCounts();
-            if(Object.keys(existingAtt).length > 0) {
-                showToast("Loaded existing attendance for this date.", "success");
-            }
         }
-    } catch (e) {
-        console.error(e);
-        showToast("Error loading data.", "error");
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    }
-});
 
-function updateSelectColor(selectEl) {
-    if (selectEl.value === 'present') {
-        selectEl.style.borderColor = 'var(--success-color)';
-        selectEl.style.color = 'var(--success-color)';
-    } else {
-        selectEl.style.borderColor = 'var(--danger-color)';
-        selectEl.style.color = 'var(--danger-color)';
+        renderAttendanceTable();
+    } catch (err) {
+        console.error("Error loading class students:", err);
+        showToast("Failed to load students for class.", "error");
     }
 }
 
-function updateCounts() {
-    let p = 0; let a = 0;
-    document.querySelectorAll('.att-status-select').forEach(sel => {
-        if(sel.value === 'present') p++;
-        else a++;
+function renderAttendanceTable() {
+    const tableBody = document.getElementById("attendanceTableBody");
+    const countEl = document.getElementById("attStudentCount");
+    const summaryEl = document.getElementById("attClassSummary");
+
+    const dept = document.getElementById("attDept").value;
+    const year = document.getElementById("attYear").value;
+    const sec = document.getElementById("attSection").value;
+    const subj = document.getElementById("attSubject").value;
+    const date = document.getElementById("attDate").value;
+
+    if (countEl) countEl.innerText = loadedStudents.length;
+    if (summaryEl) summaryEl.innerText = `${dept} | ${year} - ${sec} | Subject: ${subj} | Date: ${date}`;
+
+    tableBody.innerHTML = "";
+
+    if (loadedStudents.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No students found matching ${dept} - ${year} (${sec}). Please add students in Student Directory.</td></tr>`;
+        return;
+    }
+
+    loadedStudents.forEach(s => {
+        const isPresent = (currentAttendanceState[s.uid] || "present") === "present";
+        tableBody.innerHTML += `
+            <tr>
+                <td><strong>${s.rollNo || 'N/A'}</strong></td>
+                <td>${s.name}</td>
+                <td>${s.email}</td>
+                <td id="statusBadge_${s.uid}">
+                    ${isPresent ? '<span class="badge badge-success">PRESENT</span>' : '<span class="badge badge-danger">ABSENT</span>'}
+                </td>
+                <td style="text-align: right;">
+                    <button onclick="window.toggleAttendance('${s.uid}')" class="btn ${isPresent ? 'btn-secondary' : 'btn-primary'}" id="toggleBtn_${s.uid}">
+                        <i class="${isPresent ? 'ri-close-line text-danger' : 'ri-check-line text-success'}"></i> Mark ${isPresent ? 'Absent' : 'Present'}
+                    </button>
+                </td>
+            </tr>
+        `;
     });
-    document.getElementById("countPresent").innerText = p;
-    document.getElementById("countAbsent").innerText = a;
 }
 
-document.getElementById("markAllPresentBtn").addEventListener("click", () => {
-    document.querySelectorAll('.att-status-select').forEach(sel => {
-        sel.value = 'present';
-        updateSelectColor(sel);
+window.toggleAttendance = function(uid) {
+    const current = currentAttendanceState[uid] || "present";
+    const next = current === "present" ? "absent" : "present";
+    currentAttendanceState[uid] = next;
+
+    const badgeCell = document.getElementById(`statusBadge_${uid}`);
+    const toggleBtn = document.getElementById(`toggleBtn_${uid}`);
+
+    if (badgeCell) {
+        badgeCell.innerHTML = next === "present" ? '<span class="badge badge-success">PRESENT</span>' : '<span class="badge badge-danger">ABSENT</span>';
+    }
+    if (toggleBtn) {
+        toggleBtn.className = `btn ${next === "present" ? 'btn-secondary' : 'btn-primary'}`;
+        toggleBtn.innerHTML = `<i class="${next === "present" ? 'ri-close-line text-danger' : 'ri-check-line text-success'}"></i> Mark ${next === "present" ? 'Absent' : 'Present'}`;
+    }
+};
+
+function setAllStatus(status) {
+    loadedStudents.forEach(s => {
+        currentAttendanceState[s.uid] = status;
     });
-    updateCounts();
-});
+    renderAttendanceTable();
+    showToast(`Marked all students as ${status.toUpperCase()}.`, "info");
+}
 
-document.getElementById("markAllAbsentBtn").addEventListener("click", () => {
-    document.querySelectorAll('.att-status-select').forEach(sel => {
-        sel.value = 'absent';
-        updateSelectColor(sel);
-    });
-    updateCounts();
-});
+async function saveAttendance() {
+    const subj = document.getElementById("attSubject").value;
+    const date = document.getElementById("attDate").value;
 
-document.getElementById("saveAttendanceBtn").addEventListener("click", async () => {
-    const subject = document.getElementById("filterSubject").value.trim();
-    const date = document.getElementById("filterDate").value;
+    if (!subj || !date || loadedStudents.length === 0) {
+        showToast("No active class loaded to save.", "warning");
+        return;
+    }
 
-    const btn = document.getElementById("saveAttendanceBtn");
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="loader" style="width: 16px; height: 16px; border-width: 2px;"></span> Saving...';
-    btn.disabled = true;
+    const saveBtn = document.getElementById("saveAttendanceBtn");
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<span class="loader"></span> Saving...';
+    saveBtn.disabled = true;
 
     try {
-        const selects = document.querySelectorAll('.att-status-select');
-        const updates = {};
-        
-        selects.forEach(sel => {
-            const uid = sel.getAttribute('data-uid');
-            updates[uid] = {
-                status: sel.value,
-                markedBy: facultyUid,
+        const payload = {};
+        loadedStudents.forEach(s => {
+            payload[s.uid] = {
+                status: currentAttendanceState[s.uid] || "present",
+                markedBy: currentUser ? currentUser.uid : "faculty",
                 timestamp: new Date().getTime()
             };
+
+            // Send notification to student
+            sendNotification(
+                s.uid,
+                "Attendance Update",
+                `Your attendance for ${subj} on ${date} was marked as ${(currentAttendanceState[s.uid] || 'present').toUpperCase()}.`,
+                "attendance"
+            );
         });
 
-        // Save to Firebase under attendance/YYYY-MM-DD/Subject/
-        await set(ref(db, `attendance/${date}/${subject}`), updates);
-        
-        showToast("Attendance saved successfully!", "success");
-    } catch (e) {
-        console.error(e);
+        await set(ref(db, `attendance/${date}/${subj}`), payload);
+        showToast(`Attendance saved successfully for ${date}.`, "success");
+    } catch (err) {
+        console.error("Save attendance error:", err);
         showToast("Failed to save attendance.", "error");
     } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
     }
-});
+}
+
+async function deleteAttendanceSession() {
+    const subj = document.getElementById("attSubject").value;
+    const date = document.getElementById("attDate").value;
+
+    if (!subj || !date) {
+        showToast("Select class and date to delete session.", "warning");
+        return;
+    }
+
+    const confirmed = await showConfirm(`Are you sure you want to delete attendance record for subject "${subj}" on ${date}?`, `Delete Attendance Session`);
+    if (confirmed) {
+        try {
+            await remove(ref(db, `attendance/${date}/${subj}`));
+            showToast("Attendance session deleted.", "success");
+            currentAttendanceState = {};
+            await loadClassStudents();
+        } catch (err) {
+            console.error("Delete attendance error:", err);
+            showToast("Failed to delete attendance session.", "error");
+        }
+    }
+}

@@ -3,172 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - EduERP (Faculty)</title>
+    <title>My Profile - EduERP</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), #4338ca);
-            color: white;
-            font-size: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            box-shadow: 0 8px 20px rgba(79,70,229,0.3);
-            transition: transform 0.2s ease;
-        }
-        .profile-avatar:hover { transform: scale(1.05); }
-        .profile-avatar-initials { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 2rem; letter-spacing: 1px; }
-
-        .detail-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        @media (max-width: 576px) { .detail-row { grid-template-columns: 1fr; } }
-
-        .detail-item label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.3rem; }
-        .detail-item p { font-size: 1rem; font-weight: 500; color: var(--secondary-color); margin: 0; }
-
-        .edit-section { background: var(--bg-color); border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--border-color); }
-        .edit-section .section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem; }
-    </style>
 </head>
 <body>
 
 <div class="app-container">
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="faculty-dashboard.html" class="brand">
+            <a href="faculty-dashboard.html" class="brand" id="brandLink">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
-        <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
-            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
-            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
-            <a href="marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> Marks</a>
-            <a href="assignments.html" class="nav-item"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
-            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamic Navigation -->
         </nav>
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item active"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
-    <main class="main-wrapper">
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
                 <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
-                <h1 class="page-title">My Profile</h1>
+                <h2 class="page-title">User Account Profile</h2>
             </div>
             <div class="topbar-right">
-                <button id="logoutBtn" class="btn btn-secondary btn-icon" title="Logout"><i class="ri-logout-box-r-line"></i></button>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">User</span>
+                        <span class="user-role" id="navUserRole">Role</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
-            <div style="max-width: 720px; margin: 0 auto;">
-
-                <!-- Avatar Card -->
-                <div class="card" style="text-align: center; padding: 2.5rem 2rem;">
-                    <div class="profile-avatar">
-                        <span class="profile-avatar-initials" id="avatarInitials">?</span>
-                    </div>
-                    <h2 id="profileName" style="margin-bottom: 0.25rem; font-size: 1.5rem;">Loading...</h2>
-                    <p class="text-muted text-sm" style="margin-bottom: 0.75rem;">Faculty / Teacher</p>
-                    <div class="flex gap-2" style="justify-content: center; flex-wrap: wrap;">
-                        <span class="badge badge-primary" id="profileDept"></span>
-                        <span class="badge badge-success">Faculty</span>
+        <!-- Content Area -->
+        <main class="content-area">
+            <div class="stat-grid" style="grid-template-columns: 300px 1fr; align-items: start;">
+                <!-- Profile Avatar Card -->
+                <div class="card">
+                    <div class="card-body text-center p-4">
+                        <div class="avatar" id="profileBigAvatar" style="width: 90px; height: 90px; font-size: 2.25rem; margin: 0 auto 1rem;">U</div>
+                        <h3 id="profileNameDisplay" style="margin-bottom: 0.25rem;">User Name</h3>
+                        <div class="badge badge-primary mb-3" id="profileRoleBadge">ROLE</div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);" id="profileEmailDisplay">user@college.edu</div>
                     </div>
                 </div>
 
-                <!-- View Mode Card -->
-                <div class="card" id="viewCard">
+                <!-- Editable Profile Form -->
+                <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Account Details</h3>
-                        <button id="editProfileBtn" class="btn btn-secondary">
-                            <i class="ri-edit-line"></i> Edit Profile
-                        </button>
+                        <h3 class="card-title">Edit Account Details</h3>
                     </div>
                     <div class="card-body">
-                        <div class="detail-row">
-                            <div class="detail-item">
-                                <label>Full Name</label>
-                                <p id="viewName">--</p>
+                        <form id="profileForm" onsubmit="event.preventDefault();">
+                            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                                <div class="form-group">
+                                    <label for="profileName" class="form-label">Full Name *</label>
+                                    <input type="text" id="profileName" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profileEmail" class="form-label">Email Address (Read Only)</label>
+                                    <input type="email" id="profileEmail" class="form-control" readonly disabled style="background-color: var(--bg-color);">
+                                </div>
                             </div>
-                            <div class="detail-item">
-                                <label>Email Address</label>
-                                <p id="viewEmail" style="color: var(--text-muted);">--</p>
-                            </div>
-                            <div class="detail-item">
-                                <label>Department</label>
-                                <p id="viewDepartment">--</p>
-                            </div>
-                            <div class="detail-item">
-                                <label>Account Role</label>
-                                <p>Faculty / Teacher</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Edit Mode Card (hidden by default) -->
-                <div class="card d-none" id="editCard">
-                    <div class="card-header" style="background: linear-gradient(135deg, var(--primary-color), #4338ca); border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
-                        <h3 class="card-title" style="color: white;"><i class="ri-edit-2-line"></i> Edit Your Profile</h3>
-                        <button id="cancelEditBtn" class="btn" style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3);">
-                            <i class="ri-close-line"></i> Cancel
-                        </button>
-                    </div>
-                    <div class="card-body" style="padding: 1.75rem;">
+                            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                                <div class="form-group">
+                                    <label for="profilePhone" class="form-label">Phone Number</label>
+                                    <input type="text" id="profilePhone" class="form-control" placeholder="+1 234 567 8900">
+                                </div>
+                                <div class="form-group" id="rollNoGroup">
+                                    <label for="profileRollNo" class="form-label">Roll Number / Staff ID</label>
+                                    <input type="text" id="profileRollNo" class="form-control">
+                                </div>
+                            </div>
 
-                        <div class="edit-section mb-4">
-                            <p class="section-title"><i class="ri-user-line"></i> Personal Information</p>
+                            <div class="stat-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                                <div class="form-group">
+                                    <label for="profileDept" class="form-label">Department</label>
+                                    <select id="profileDept" class="form-select select-dept">
+                                        <option value="">Select Department</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="yearGroup">
+                                    <label for="profileYear" class="form-label">Academic Year</label>
+                                    <select id="profileYear" class="form-select select-year">
+                                        <option value="">Select Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="secGroup">
+                                    <label for="profileSection" class="form-label">Section</label>
+                                    <select id="profileSection" class="form-select select-section">
+                                        <option value="">Select Section</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label class="form-label">Full Name <span style="color:var(--danger-color)">*</span></label>
-                                <input type="text" id="editName" class="form-control" placeholder="Your full name">
+                                <label for="profileAddress" class="form-label">Residential Address</label>
+                                <textarea id="profileAddress" class="form-control" rows="3" placeholder="Full residential street address"></textarea>
                             </div>
-                        </div>
 
-                        <div class="edit-section mb-4">
-                            <p class="section-title"><i class="ri-building-line"></i> Department</p>
-                            <div class="form-group">
-                                <label class="form-label">Department</label>
-                                <select id="editDept" class="form-select">
-                                    <option value="Computer Science">Computer Science</option>
-                                    <option value="Information Technology">Information Technology</option>
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="Mechanical">Mechanical</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="background: var(--warning-light); border-left: 3px solid var(--warning-color); padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--warning-text);">
-                            <strong><i class="ri-information-line"></i> Note:</strong> Email address cannot be changed here as it is linked to your login credentials.
-                        </div>
-
-                        <div class="flex gap-3">
-                            <button id="saveProfileBtn" class="btn btn-primary" style="padding: 0.75rem 2rem;">
-                                <i class="ri-save-3-line"></i> Save Changes
+                            <button id="saveProfileBtn" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+                                <i class="ri-save-line"></i> Update Profile Information
                             </button>
-                            <button id="cancelEditBtn2" class="btn btn-secondary">Discard</button>
-                        </div>
+                        </form>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
+
 <script type="module" src="js/profile.js"></script>
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
 </body>
 </html>

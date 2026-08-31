@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Master Data - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                <span>EduERP</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
+            <a href="academic.html" class="nav-item active"><i class="ri-building-line nav-icon"></i> Academic Data</a>
+            <a href="students.html" class="nav-item"><i class="ri-user-line nav-icon"></i> Students</a>
+            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
+            <a href="attendance-report.html" class="nav-item"><i class="ri-file-list-3-line nav-icon"></i> Attendance Report</a>
+            <a href="marks.html" class="nav-item"><i class="ri-award-line nav-icon"></i> Marks Management</a>
+            <a href="assignments.html" class="nav-item"><i class="ri-book-open-line nav-icon"></i> Assignments</a>
+            <a href="leave.html" class="nav-item"><i class="ri-pass-valid-line nav-icon"></i> Leave Requests</a>
+            <a href="notifications.html" class="nav-item"><i class="ri-notification-3-line nav-icon"></i> Notifications</a>
+            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h2 class="page-title">Academic Master Data Management</h2>
+            </div>
+            <div class="topbar-right">
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">FC</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">Faculty Admin</span>
+                        <span class="user-role" id="navUserRole">Faculty</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content-area">
+            <div class="card mb-4" style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); color: white; border: none;">
+                <div class="card-body" style="padding: 1.5rem 2rem;">
+                    <h3 style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="ri-database-2-line"></i> Central Master Data</h3>
+                    <p style="opacity: 0.9; margin: 0; font-size: 0.95rem;">Manage departments, academic years, sections, and subjects. Changes immediately propagate across all system dropdowns and student records.</p>
+                </div>
+            </div>
+
+            <!-- Master Data Tabs -->
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: var(--bg-color); gap: 1rem; flex-wrap: wrap;">
+                    <div class="flex gap-2">
+                        <button class="btn btn-primary master-tab-btn active" data-tab="deptsTab"><i class="ri-building-line"></i> Departments</button>
+                        <button class="btn btn-secondary master-tab-btn" data-tab="yearsTab"><i class="ri-calendar-line"></i> Academic Years</button>
+                        <button class="btn btn-secondary master-tab-btn" data-tab="sectionsTab"><i class="ri-grid-line"></i> Sections</button>
+                        <button class="btn btn-secondary master-tab-btn" data-tab="subjectsTab"><i class="ri-book-2-line"></i> Subjects</button>
+                    </div>
+                    <button class="btn btn-primary" id="addMasterItemBtn"><i class="ri-add-line"></i> Add New Record</button>
+                </div>
+
+                <div class="card-body">
+                    <!-- Departments Section -->
+                    <div id="deptsTab" class="master-tab-content">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Department Code</th>
+                                        <th>Department Name</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="deptsTableBody">
+                                    <tr><td colspan="3" class="text-center text-muted"><span class="loader"></span> Loading departments...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Years Section -->
+                    <div id="yearsTab" class="master-tab-content d-none">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Year Code</th>
+                                        <th>Academic Year Title</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="yearsTableBody">
+                                    <tr><td colspan="3" class="text-center text-muted"><span class="loader"></span> Loading academic years...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sections Section -->
+                    <div id="sectionsTab" class="master-tab-content d-none">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Section Code</th>
+                                        <th>Section Name</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sectionsTableBody">
+                                    <tr><td colspan="3" class="text-center text-muted"><span class="loader"></span> Loading sections...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Subjects Section -->
+                    <div id="subjectsTab" class="master-tab-content d-none">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Code</th>
+                                        <th>Subject Name</th>
+                                        <th>Department</th>
+                                        <th>Year</th>
+                                        <th style="text-align: right;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjectsTableBody">
+                                    <tr><td colspan="5" class="text-center text-muted"><span class="loader"></span> Loading subjects...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Modal for Master Data Item -->
+<div class="modal-overlay" id="masterModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="masterModalTitle">Add Record</h3>
+            <button class="modal-close" id="closeMasterModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="masterItemKey">
+            <input type="hidden" id="masterItemCategory" value="departments">
+
+            <div class="form-group">
+                <label for="masterItemName" class="form-label">Name / Title *</label>
+                <input type="text" id="masterItemName" class="form-control" placeholder="e.g. Computer Science / Data Structures" required>
+            </div>
+
+            <div class="form-group">
+                <label for="masterItemCode" class="form-label">Code / Identifier</label>
+                <input type="text" id="masterItemCode" class="form-control" placeholder="e.g. CSE / CS301">
+            </div>
+
+            <!-- Additional Subject Fields -->
+            <div id="subjectExtraFields" class="d-none">
+                <div class="form-group">
+                    <label for="subjectDept" class="form-label">Associated Department</label>
+                    <select id="subjectDept" class="form-select select-dept">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subjectYear" class="form-label">Associated Year</label>
+                    <select id="subjectYear" class="form-select select-year">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelMasterModal">Cancel</button>
+            <button class="btn btn-primary" id="saveMasterItemBtn"><i class="ri-save-line"></i> Save Master Data</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/academic.js"></script>
+</body>
+</html>

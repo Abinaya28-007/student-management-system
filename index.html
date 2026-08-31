@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduERP Login - Student Management System</title>
+    <title>EduERP – College Student Management System | Login</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
@@ -16,51 +16,49 @@
                 <i class="ri-graduation-cap-fill"></i>
             </div>
             <h1 class="auth-title">Welcome to EduERP</h1>
-            <p class="auth-subtitle">Log in to your account to continue</p>
+            <p class="auth-subtitle">College Student Management ERP System</p>
         </div>
 
         <form id="loginForm" onsubmit="event.preventDefault();">
             <div class="form-group">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" class="form-control" placeholder="name@college.edu" required>
+                <div style="position: relative;">
+                    <i class="ri-mail-line" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="email" id="email" class="form-control" placeholder="name@college.edu" style="padding-left: 2.25rem;" required>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="password" class="form-label">Password</label>
                 <div style="position: relative;">
-                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                    <i class="ri-lock-line" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" style="padding-left: 2.25rem; padding-right: 2.5rem;" required>
                     <button type="button" id="togglePassword" class="btn-icon" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none;">
                         <i class="ri-eye-off-line"></i>
                     </button>
                 </div>
             </div>
 
-            <button id="loginBtn" class="btn btn-primary w-100 mt-2" style="padding: 0.75rem; font-size: 1rem;">
-                Sign In
+            <div class="flex items-center justify-between mb-4" style="font-size: 0.875rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-muted);">
+                    <input type="checkbox" id="rememberLogin" style="accent-color: var(--primary-color);">
+                    Remember login
+                </label>
+            </div>
+
+            <button id="loginBtn" class="btn btn-primary w-100" style="padding: 0.75rem; font-size: 1rem;">
+                <i class="ri-login-box-line"></i> Sign In to Portal
             </button>
         </form>
 
         <div class="auth-footer">
-            Don't have an account? <a href="register.html">Create an Account</a>
+            Don't have an account? <a href="register.html" style="font-weight: 600;">Create an Account</a>
         </div>
     </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
 
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        const pwd = document.getElementById('password');
-        const icon = this.querySelector('i');
-        if (pwd.type === 'password') {
-            pwd.type = 'text';
-            icon.className = 'ri-eye-line';
-        } else {
-            pwd.type = 'password';
-            icon.className = 'ri-eye-off-line';
-        }
-    });
-</script>
 <script type="module" src="js/auth.js"></script>
 </body>
 </html>

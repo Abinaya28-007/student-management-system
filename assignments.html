@@ -3,128 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Assignments - EduERP</title>
+    <title>Course Assignments - EduERP</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="app-container">
-    <aside class="sidebar" id="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="faculty-dashboard.html" class="brand">
+            <a href="faculty-dashboard.html" class="brand" id="brandLink">
                 <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
-                EduERP
+                <span>EduERP</span>
             </a>
         </div>
-        <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-item"><i class="ri-dashboard-line nav-icon"></i> Dashboard</a>
-            <a href="students.html" class="nav-item"><i class="ri-group-line nav-icon"></i> Students</a>
-            <a href="attendance.html" class="nav-item"><i class="ri-calendar-check-line nav-icon"></i> Attendance</a>
-            <a href="marks.html" class="nav-item"><i class="ri-file-text-line nav-icon"></i> Marks</a>
-            <a href="assignments.html" class="nav-item active"><i class="ri-book-read-line nav-icon"></i> Assignments</a>
-            <a href="reports.html" class="nav-item"><i class="ri-bar-chart-box-line nav-icon"></i> Reports</a>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamic Nav Links -->
         </nav>
         <div class="sidebar-footer">
-            <a href="profile.html" class="nav-item"><i class="ri-user-settings-line nav-icon"></i> Profile</a>
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
         </div>
     </aside>
 
-    <main class="main-wrapper">
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
         <header class="topbar">
             <div class="topbar-left">
                 <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
-                <h1 class="page-title">Manage Assignments</h1>
+                <h2 class="page-title">Course Assignments</h2>
             </div>
             <div class="topbar-right">
-                <button id="logoutBtn" class="btn btn-secondary btn-icon"><i class="ri-logout-box-r-line"></i></button>
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">User</span>
+                        <span class="user-role" id="navUserRole">Role</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <div class="content-area">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">All Assignments</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="searchAssignments" class="form-control" placeholder="Search title or subject..." style="width: 250px; margin-bottom: 0;">
-                        <button id="addAssignmentBtn" class="btn btn-primary"><i class="ri-add-line"></i> Create Assignment</button>
-                    </div>
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group" style="flex: 2;">
+                    <label class="form-label"><i class="ri-search-line"></i> Search Assignments</label>
+                    <input type="text" id="searchAssignment" class="form-control" placeholder="Search by title, subject or description...">
                 </div>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Subject</th>
-                                <th>Target Class</th>
-                                <th>Deadline</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="assignmentsTableBody">
-                            <tr><td colspan="5" class="text-center">Loading...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="filter-group">
+                    <label class="form-label">Subject</label>
+                    <select id="filterSubject" class="form-select select-subject">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Department</label>
+                    <select id="filterDept" class="form-select select-dept">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+                <div id="facultyAddAssignBtnWrapper">
+                    <button class="btn btn-primary" id="addAssignmentBtn"><i class="ri-add-line"></i> Create Assignment</button>
                 </div>
             </div>
-        </div>
-    </main>
+
+            <!-- Assignments Grid / Cards -->
+            <div id="assignmentsList" class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                <div class="text-center text-muted p-4" style="grid-column: 1 / -1;"><span class="loader"></span> Loading course assignments...</div>
+            </div>
+        </main>
+    </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Form for Create/Edit Assignment -->
 <div class="modal-overlay" id="assignmentModal">
-    <div class="modal">
+    <div class="modal" style="max-width: 600px;">
         <div class="modal-header">
-            <h3 class="modal-title" id="assignmentModalTitle">Create Assignment</h3>
-            <button class="modal-close"><i class="ri-close-line"></i></button>
+            <h3 class="modal-title" id="assignModalTitle">Create Assignment</h3>
+            <button class="modal-close" id="closeAssignModal">&times;</button>
         </div>
         <div class="modal-body">
-            <input type="hidden" id="assignmentId">
+            <input type="hidden" id="assignId">
+            
             <div class="form-group">
-                <label class="form-label">Assignment Title</label>
-                <input type="text" id="assignTitle" class="form-control" placeholder="e.g. Chapter 1 Quiz" required>
+                <label for="assignTitle" class="form-label">Assignment Title *</label>
+                <input type="text" id="assignTitle" class="form-control" placeholder="e.g. BST Implementation & Analysis" required>
             </div>
-            <div class="form-group">
-                <label class="form-label">Subject</label>
-                <input type="text" id="assignSubject" class="form-control" placeholder="e.g. Database Systems" required>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Target Class</label>
-                <div class="flex gap-2 mb-2">
-                    <select id="assignDept" class="form-select">
-                        <option value="Computer Science">CS</option>
-                        <option value="Information Technology">IT</option>
-                        <option value="Electronics">ECE</option>
-                        <option value="Mechanical">MECH</option>
-                        <option value="All">All Departments</option>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="assignSubject" class="form-label">Subject *</label>
+                    <select id="assignSubject" class="form-select select-subject" required>
+                        <option value="">Select Subject</option>
                     </select>
-                    <select id="assignYear" class="form-select">
-                        <option value="I">Yr I</option><option value="II">Yr II</option><option value="III">Yr III</option><option value="IV">Yr IV</option><option value="All">All</option>
+                </div>
+                <div class="form-group">
+                    <label for="assignMaxMarks" class="form-label">Maximum Marks *</label>
+                    <input type="number" id="assignMaxMarks" class="form-control" value="10" min="1" max="100" required>
+                </div>
+            </div>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="assignDept" class="form-label">Department *</label>
+                    <select id="assignDept" class="form-select select-dept" required>
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignYear" class="form-label">Academic Year *</label>
+                    <select id="assignYear" class="form-select select-year" required>
+                        <option value="">Select Year</option>
                     </select>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Deadline</label>
-                <input type="date" id="assignDeadline" class="form-control" required>
+
+            <div class="stat-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0;">
+                <div class="form-group">
+                    <label for="assignSection" class="form-label">Section *</label>
+                    <select id="assignSection" class="form-select select-section" required>
+                        <option value="">Select Section</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignAssignedDate" class="form-label">Assigned Date *</label>
+                    <input type="date" id="assignAssignedDate" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignDueDate" class="form-label">Due Date *</label>
+                    <input type="date" id="assignDueDate" class="form-control" required>
+                </div>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Description / Instructions</label>
-                <textarea id="assignDesc" class="form-control" rows="4" placeholder="Write assignment details..."></textarea>
+                <label for="assignDesc" class="form-label">Assignment Instructions / Description</label>
+                <textarea id="assignDesc" class="form-control" rows="3" placeholder="Provide detailed submission requirements..."></textarea>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary modal-close-btn">Cancel</button>
-            <button id="saveAssignmentBtn" class="btn btn-primary">Save Assignment</button>
+            <button class="btn btn-secondary" id="cancelAssignModal">Cancel</button>
+            <button class="btn btn-primary" id="saveAssignBtn"><i class="ri-save-line"></i> Save Assignment</button>
         </div>
     </div>
 </div>
 
 <div id="toast-container" class="toast-container"></div>
+
 <script type="module" src="js/assignments.js"></script>
-<script>
-    document.getElementById('mobileToggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open');
-    });
-</script>
 </body>
 </html>

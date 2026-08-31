@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'faculty')"
+      }
+    },
+    "masterData": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "attendance": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "assignments": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "assignmentMarks": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "internalMarks": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "examMarks": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'faculty'"
+    },
+    "leaveRequests": {
+      ".read": "auth != null",
+      "$leaveId": {
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'faculty' || newData.child('studentUid').val() === auth.uid || data.child('studentUid').val() === auth.uid)"
+      }
+    },
+    "notifications": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'faculty')",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand" id="brandLink">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                <span>EduERP</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamic Navigation -->
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h2 class="page-title">Notification Center</h2>
+            </div>
+            <div class="topbar-right">
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">User</span>
+                        <span class="user-role" id="navUserRole">Role</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <div class="card mb-4">
+                <div class="card-header" style="flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3 class="card-title">Realtime System Notifications</h3>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Stay updated with attendance, assignments, marks, and leave updates.</div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-secondary" id="markAllReadBtn"><i class="ri-check-double-line"></i> Mark All as Read</button>
+                        <button class="btn btn-danger" id="clearAllNotifBtn"><i class="ri-delete-bin-line"></i> Clear All</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="fullNotifList" class="flex flex-column gap-3">
+                        <div class="text-center text-muted p-3"><span class="loader"></span> Loading notifications...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/notifications.js"></script>
+</body>
+</html>

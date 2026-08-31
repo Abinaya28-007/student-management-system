@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report - EduERP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="faculty-dashboard.html" class="brand" id="brandLink">
+                <div class="brand-icon"><i class="ri-graduation-cap-fill"></i></div>
+                <span>EduERP</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <!-- Dynamic Navigation Links -->
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" id="logoutBtn" class="nav-item" style="color: var(--danger-color);"><i class="ri-logout-box-line nav-icon"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="ri-menu-line"></i></button>
+                <h2 class="page-title">Attendance Analytics & Report</h2>
+            </div>
+            <div class="topbar-right">
+                <div style="position: relative;">
+                    <button class="btn-icon" id="notifBellBtn" title="Notifications">
+                        <i class="ri-notification-3-line" style="font-size: 1.25rem;"></i>
+                        <span class="badge badge-danger" id="notifBadge" style="position: absolute; top: -4px; right: -4px; display: none;">0</span>
+                    </button>
+                    <div id="notifDropdown" class="card" style="position: absolute; right: 0; top: 45px; width: 320px; z-index: 100; display: none;">
+                        <div class="card-header" style="padding: 0.75rem 1rem;">
+                            <h4 style="font-size: 0.9rem; margin: 0;">Notifications</h4>
+                            <a href="notifications.html" style="font-size: 0.75rem;">View All</a>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="navUserAvatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name" id="navUserName">User</span>
+                        <span class="user-role" id="navUserRole">Role</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="form-label">Department</label>
+                    <select id="reportDept" class="form-select select-dept">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Year</label>
+                    <select id="reportYear" class="form-select select-year">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Section</label>
+                    <select id="reportSection" class="form-select select-section">
+                        <option value="">All Sections</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">Subject</label>
+                    <select id="reportSubject" class="form-select select-subject">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">From Date</label>
+                    <input type="date" id="reportFromDate" class="form-control">
+                </div>
+                <div class="filter-group">
+                    <label class="form-label">To Date</label>
+                    <input type="date" id="reportToDate" class="form-control">
+                </div>
+                <div>
+                    <button class="btn btn-primary" id="generateReportBtn"><i class="ri-filter-3-line"></i> Generate Report</button>
+                </div>
+            </div>
+
+            <!-- Report Card -->
+            <div class="card">
+                <div class="card-header" style="flex-wrap: wrap;">
+                    <div>
+                        <h3 class="card-title">Attendance Percentage Summary</h3>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);" id="reportSummaryText">Showing attendance percentage report. Threshold: 75% min attendance required.</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary" onclick="window.print()"><i class="ri-printer-line"></i> Print / Export</button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Student Name</th>
+                                    <th>Department</th>
+                                    <th>Total Classes</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th style="width: 220px;">Attendance %</th>
+                                    <th>Status Warning</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody">
+                                <tr><td colspan="8" class="text-center text-muted"><span class="loader"></span> Loading attendance report...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script type="module" src="js/attendance-report.js"></script>
+</body>
+</html>
